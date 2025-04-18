@@ -10,9 +10,11 @@ use src\dto\DtoFactory;
 use src\exceptions\BadRequestHttpException;
 use src\exceptions\BaseHttpException;
 use src\exceptions\HttpExceptionFactory;
+use src\exceptions\UnauthorizedHttpException;
 use src\services\{CompanyService, UserService};
 use src\utils\{UserSession, Utils, Validator};
 use src\views\components\PaginationComponent;
+use src\utils\Csrf;
 
 class CompanyController extends Controller
 {
@@ -811,6 +813,10 @@ class CompanyController extends Controller
             $res->renderPage($viewPathFromPages, $data);
         } else if ($req->getMethod() == "POST") {
             // PUT
+            // Invalid CSRF token
+            if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                throw new UnauthorizedHttpException("Unauthorized");
+            }
             // Validate request body
             $rules = [
                 'name' => ['required', "max" => 128],

@@ -1,3 +1,8 @@
+<?php
+use src\utils\Csrf;
+$csrfToken = Csrf::generateToken();
+?>
+
 <main class="main">
     <!-- Card -->
     <section class="profile">
@@ -18,6 +23,7 @@
 
         <!-- Form -->
         <form class="form" action="/company/profile" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
             <!-- Name -->
             <div class="form__group">
                 <label for="name" class="form__label 
