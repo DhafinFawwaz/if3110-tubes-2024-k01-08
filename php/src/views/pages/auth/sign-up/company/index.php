@@ -1,9 +1,15 @@
+<?php
+use src\utils\Csrf;
+$csrfToken = Csrf::generateToken();
+?>
+
 <main class="main">
     <section class="signup">
         <!-- Title -->
         <h1 class="signup__title">Sign Up</h1>
         <!-- Form -->
         <form class="form" action="/auth/sign-up/company" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
             <!-- Nama -->
             <div class="form__group">
                 <label for="name" class="form__label 

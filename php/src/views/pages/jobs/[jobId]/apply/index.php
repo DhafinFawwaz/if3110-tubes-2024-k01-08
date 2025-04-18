@@ -1,5 +1,6 @@
 <?php
-
+use src\utils\Csrf;
+$csrfToken = Csrf::generateToken();
 use src\dao\JobType;
 use src\dao\LocationType;
 
@@ -105,6 +106,7 @@ use src\dao\LocationType;
             action="/jobs/<?= htmlspecialchars($jobId, ENT_QUOTES, 'UTF-8') ?>/apply"
             method="POST"
             enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
             <!-- Title -->
             <h1 class="card__title">
                 Apply For This Job

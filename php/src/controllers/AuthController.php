@@ -7,8 +7,10 @@ use src\core\{Request, Response};
 use src\dao\UserRole;
 use src\dto\DtoFactory;
 use src\exceptions\{BadRequestHttpException, BaseHttpException, InternalServerErrorHttpException, HttpExceptionFactory};
+use src\exceptions\UnauthorizedHttpException;
 use src\services\AuthService;
 use src\utils\{UserSession, Validator};
+use src\utils\Csrf;
 
 /**
  * Controller for handling authentication
@@ -53,6 +55,11 @@ class AuthController extends Controller
             $res->renderPage($viewPathFromPages, $data);
         } else {
             // Post
+            // Invalid CSRF token
+            if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                throw new UnauthorizedHttpException("Unauthorized");
+            }
+            
             // Validate the request body
             $rules = [
                 'email' => ['required', 'email'],
@@ -180,6 +187,10 @@ class AuthController extends Controller
             // Get
             $res->renderPage($viewPathFromPages, $data);
         } else {
+            // Invalid CSRF token
+            if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                throw new UnauthorizedHttpException("Unauthorized");
+            }
             // Post
             $name = $req->getBody()['name'];
             $email = $req->getBody()['email'];
@@ -258,6 +269,10 @@ class AuthController extends Controller
             $res->renderPage($viewPathFromPages, $data);
         } else {
             // Post
+            // Invalid CSRF token
+            if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                throw new UnauthorizedHttpException("Unauthorized");
+            }
             $name = $req->getBody()['name'];
             $email = $req->getBody()['email'];
             $password = $req->getBody()['password'];

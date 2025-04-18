@@ -1,3 +1,8 @@
+<?php
+use src\utils\Csrf;
+$csrfToken = Csrf::generateToken();
+?>
+
 <main class="main">
     <!-- Card -->
     <section class="card">
@@ -18,6 +23,7 @@
 
         <!-- Form -->
         <form id="create-job-form" class="form" action="/company/jobs/create" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
             <!-- Position -->
             <div class="form__group">
                 <label for="position" class="form__label 
