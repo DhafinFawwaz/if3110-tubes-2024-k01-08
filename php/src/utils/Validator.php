@@ -2,6 +2,8 @@
 
 namespace src\utils;
 
+use finfo;
+
 class Validator
 {
     // Error fields
@@ -102,23 +104,35 @@ class Validator
                         if ($value['error'] == UPLOAD_ERR_NO_FILE) {
                             continue 2;
                         }
-                        // allowed types
+
+                        $finfo = new finfo(FILEINFO_MIME_TYPE);
+                        $mimeType = $finfo->file($value['tmp_name']);
+
+                        // allowed types with MIME type
+                        if(!in_array($mimeType, $param['allowedTypes'])) {
+                            $message = ucfirst("$fieldInMessage must be one of " . implode(', ', $param['allowedTypes']));
+                            $this->addError($field, $message);
+                        }
+
+                        // allowed types with file extension
                         if (!in_array($value['type'], $param['allowedTypes'])) {
                             $message = ucfirst("$fieldInMessage must be one of " . implode(', ', $param['allowedTypes']));
                             $this->addError($field, $message);
                         }
+                        
                         // max size
                         if ($value['size'] > $param['maxSize']) {
                             $message = ucfirst("$fieldInMessage must be no more than " . $param['maxSize'] . " bytes");
                             $this->addError($field, $message);
                         }
+
                         break;
                     case 'files':
                         // only check if file exists
                         if ($value['error'][0] == UPLOAD_ERR_NO_FILE) {
                             continue 2;
                         }
-                        // allowed types
+                        // allowed types with extension
                         foreach ($value['type'] as $key => $type) {
                             if (!in_array($type, $param['allowedTypes'])) {
                                 $message = ucfirst("$fieldInMessage must be one of " . implode(', ', $param['allowedTypes']));
@@ -131,6 +145,17 @@ class Validator
                                 $sizeMb = floor($param['maxSize'] / (1024 * 1024));
                                 $message = ucfirst("$fieldInMessage must be no more than " . $sizeMb . " MB");
                                 $this->addError($field, $message);
+                            }
+                        }
+
+                        $finfo = new finfo(FILEINFO_MIME_TYPE);
+                        // Check each file's actual MIME type
+                        foreach ($value['tmp_name'] as $key => $tmpName) {
+                            $mimeType = $finfo->file($tmpName);
+                            if (!in_array($mimeType, $param['allowedTypes'])) {
+                                $message = ucfirst("$fieldInMessage must be one of " . implode(', ', $param['allowedTypes']));
+                                $this->addError($field, $message);
+                                break;
                             }
                         }
 
