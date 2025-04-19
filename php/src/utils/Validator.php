@@ -133,6 +133,17 @@ class Validator
                                 $this->addError($field, $message);
                             }
                         }
+
+                        // max dimensions
+                        if (isset($param['maxDimension'])) {
+                            foreach ($value['tmp_name'] as $key => $tmpName) {
+                                list($width, $height) = getimagesize($tmpName);
+                                if ($width > $param['maxDimension']['width'] || $height > $param['maxDimension']['height']) {
+                                    $message = ucfirst("$fieldInMessage must be no more than " . $param['maxDimension']['width'] . "x" . $param['maxDimension']['height'] . " pixels");
+                                    $this->addError($field, $message);
+                                }
+                            }
+                        }
                         break;
                 }
             }

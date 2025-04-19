@@ -113,7 +113,7 @@ class CompanyController extends Controller
                 'description' => ['required', "max" => 2048],
                 'job-type' => ['required', "enum" => JobType::getValues()],
                 'location-type' => ['required', "enum" => LocationType::getValues()],
-                'attachments' => ['optional', "files" => ['maxSize' => 5 * 1024 * 1024, 'allowedTypes' => ['image/jpeg', 'image/png']]]
+                'attachments' => ['optional', "files" => ['maxSize' => 5 * 1024 * 1024, 'allowedTypes' => ['image/jpeg', 'image/png'], "maxDimension" => ['width' => 1024, 'height' => 1024]]]
             ];
 
             $validator = new Validator();
@@ -620,7 +620,7 @@ class CompanyController extends Controller
                 'is-open' => ['required', 'boolean'],
                 'job-type' => ['required', "enum" => JobType::getValues()],
                 'location-type' => ['required', "enum" => LocationType::getValues()],
-                'attachments' => ['optional', "files" => ['maxSize' => 5 * 1024 * 1024, 'allowedTypes' => ['image/jpeg', 'image/png']]]
+                'attachments' => ['optional', "files" => ['maxSize' => 5 * 1024 * 1024, 'allowedTypes' => ['image/jpeg', 'image/png'], "maxDimension" => ['width' => 1024, 'height' => 1024]]]
             ];
 
             $validator = new Validator();
