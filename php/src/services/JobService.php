@@ -188,6 +188,9 @@ class JobService extends Service
         try {
             $application = $this->applicationRepository->createApplication($user_id, $job_id, $uploadedCvPath, $uploadedVideoPath);
         } catch (Exception $e) {
+            // Handle case when file already uploaded but sql row is already inserted. Storage Exhaustion vuln.
+            $this->uploadService->deleteOneFile($uploadedCvPath);
+            $this->uploadService->deleteOneFile($uploadedVideoPath);
             throw HttpExceptionFactory::createInternalServerError("An error occurred while applying for job");
         }
     }

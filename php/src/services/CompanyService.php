@@ -194,6 +194,8 @@ class CompanyService extends Service
             try {
                 [$job, $jobAttachments] = $this->jobRepository->createJobAndAttachments($userId, $position, $description, $jobType, $locationType, $uploadedFilePaths);
             } catch (Exception $e) {
+                // Handle case when file already uploaded but sql row is already inserted. Storage Exhaustion vuln.
+                $this->uploadService->deleteMultipleFiles($uploadedFilePaths);
                 throw HttpExceptionFactory::createInternalServerError("An error occurred while creating job posting");
             }
 
@@ -363,6 +365,8 @@ class CompanyService extends Service
             try {
                 $jobAttachments = $this->jobRepository->editJobAndCreateAttachments($job, $uploadedFilePaths);
             } catch (Exception $e) {
+                // Handle case when file already uploaded but sql row is already inserted. Storage Exhaustion vuln.
+                $this->uploadService->deleteMultipleFiles($uploadedFilePaths);
                 throw HttpExceptionFactory::createInternalServerError("An error occurred while editing job posting");
             }
 
