@@ -98,7 +98,7 @@ use src\utils\Sanitizer;
             <div class="card__content">
                 <h2 class="content__title">Status Reason</h2>
                 <div class="content__rich-text">
-                    <?= $application->getStatusReason() ?>
+                    <?= Sanitizer::sanitize($application->getStatusReason()) ?>
                 </div>
             </div>
         <?php endif; ?>

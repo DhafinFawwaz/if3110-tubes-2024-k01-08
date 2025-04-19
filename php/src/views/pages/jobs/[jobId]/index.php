@@ -3,6 +3,7 @@
 use src\dao\ApplicationStatus;
 use src\dao\JobType;
 use src\dao\LocationType;
+use src\utils\Sanitizer;
 use src\utils\UserSession;
 
 ?>
@@ -176,7 +177,7 @@ use src\utils\UserSession;
                     <div class="application-status__group">
                         <h3 class="application-status__title">Status Reason</h3>
                         <div class="content__rich-text">
-                            <?= $application->getStatusReason() ?>
+                            <?= Sanitizer::sanitize($application->getStatusReason()) ?>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -190,7 +191,7 @@ use src\utils\UserSession;
 
             <!-- Content -->
             <div class="content__rich-text">
-                <?= $job->getDescription() ?>
+                <?= Sanitizer::sanitize($job->getDescription()) ?>
             </div>
 
             <!-- Attachments (Carousel) -->
