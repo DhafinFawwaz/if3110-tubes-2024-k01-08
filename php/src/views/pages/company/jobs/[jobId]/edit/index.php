@@ -1,5 +1,8 @@
 <?php
-    use src\utils\Sanitizer;
+use src\utils\Csrf;
+use src\utils\Sanitizer;
+
+$csrfToken = Csrf::generateToken();
 ?>
 
 <main class="main">
@@ -27,6 +30,7 @@
             action="/company/jobs/<?= htmlspecialchars($currentJobId, ENT_QUOTES, 'UTF-8') ?>/edit"
             method="POST"
             enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
             <!-- Position -->
             <div class="form__group">
                 <label for="position" class="form__label 

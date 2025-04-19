@@ -105,7 +105,10 @@ class CompanyController extends Controller
             $res->renderPage($viewPathFromPages, $data);
         } else if ($req->getMethod() == "POST") {
             // POST
-
+            // Invalid CSRF token
+            if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                throw new UnauthorizedHttpException("Unauthorized");
+            }
             // Validate request 
             // attachment is optional (QnA No. 30)
             $rules = [
@@ -612,6 +615,10 @@ class CompanyController extends Controller
             $res->renderPage($viewPathFromPages, $data);
         } else if ($req->getMethod() == "POST") {
             // POST
+            // Invalid CSRF token
+            if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                throw new UnauthorizedHttpException("Unauthorized");
+            }
             // Validate request body
             // attachment is optional (QnA No. 30)
             $rules = [

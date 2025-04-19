@@ -11,8 +11,9 @@ use src\exceptions\BadRequestHttpException;
 use src\exceptions\BaseHttpException;
 use src\exceptions\ConflictHttpException;
 use src\exceptions\HttpExceptionFactory;
+use src\exceptions\UnauthorizedHttpException;
 use src\services\{JobService, UserService};
-use src\utils\{UserSession, Utils, Validator};
+use src\utils\{UserSession, Utils, Validator, Csrf};
 use src\views\components\PaginationComponent;
 
 class JobController extends Controller
@@ -286,6 +287,10 @@ class JobController extends Controller
                     $res->renderPage($viewPathFromPages, $data);
                 }
             } else if ($req->getMethod() == "POST") {
+                // Invalid CSRF token
+                if (!Csrf::validateToken($req->getBody()['csrf_token'] ?? '')) {
+                    throw new UnauthorizedHttpException("Unauthorized");
+                }
                 // Handle form submission
 
                 // Validate request
