@@ -9,6 +9,14 @@ use src\utils\PathResolver;
  */
 class UploadService
 {
+
+    private function limitFileName(string $fileName, int $maxLength): string
+    {
+        if (strlen($fileName) > $maxLength) {
+            $fileName = substr($fileName, 0, $maxLength);
+        }
+        return $fileName;
+    }
     /**
      * Uploads a file to a certain target directory
      * @param directoryFromPublic: target directory to upload the file
@@ -23,6 +31,9 @@ class UploadService
         // Remove illegal characters from the
         // change non-alphanumeric characters (except . - _ ) to underscore 
         $validatedOriginalFileName = preg_replace('/[^a-zA-Z0-9.-_]/', '_', $originalFileName);
+
+        // Max file name length is VARCHAR(255), the prefixes will be around 50 characters, so limit to 100 should be enough.
+        $validatedOriginalFileName = $this->limitFileName($validatedOriginalFileName, 100);
         $finalFilename = uniqid() . '_' . $validatedOriginalFileName;
 
         $folderDirectoryToMove = PathResolver::resolve(__DIR__ . '/../../public/' . $directoryFromPublic);
