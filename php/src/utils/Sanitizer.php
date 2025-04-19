@@ -14,7 +14,7 @@ class Sanitizer {
         'span' => ['style'],
         'p' => ['class'],
         'li' => ['class'],
-        'pre' => ['class']
+        'pre' => ['class'],
     ];
 
     private static $allowedStyles = [
@@ -34,19 +34,24 @@ class Sanitizer {
         if (empty(trim($html))) {
             return '';
         }
-
+    
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
-
-        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    
+        $wrappedHtml = '<div>' . $html . '</div>';
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $wrappedHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
-
-        if ($dom->documentElement) {
-            self::sanitizeNode($dom->documentElement);
-            return $dom->saveHTML();
+    
+        self::sanitizeNode($dom->documentElement);
+    
+        $container = $dom->documentElement;
+        $sanitizedHtml = '';
+        foreach ($container->childNodes as $child) {
+            $sanitizedHtml .= $dom->saveHTML($child);
         }
-
-        return '';
+    
+        error_log("Sanitized HTML: $sanitizedHtml");
+        return $sanitizedHtml;
     }
 
     private static function sanitizeNode(\DOMNode $node) {
@@ -56,8 +61,10 @@ class Sanitizer {
                 return;
             }
 
+            error_log("Sanitizing <{$node->tagName}>");
             foreach (iterator_to_array($node->attributes) as $attr) {
                 if (!self::isAllowedAttribute($node->tagName, $attr)) {
+                    error_log("Removing attribute {$attr->name} from <{$node->tagName}>");
                     $node->removeAttribute($attr->name);
                 }
             }
@@ -72,6 +79,7 @@ class Sanitizer {
         }
 
         foreach (iterator_to_array($node->childNodes) as $childNode) {
+            error_log("Sanitizing child node of name <{$childNode->nodeName}>");
             self::sanitizeNode($childNode);
         }
     }
