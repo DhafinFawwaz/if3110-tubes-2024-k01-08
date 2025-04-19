@@ -1,3 +1,7 @@
+<?php
+    use src\utils\Sanitizer;
+?>
+
 <main class="main">
     <!-- Card -->
     <section class="card">
@@ -60,7 +64,7 @@
 
                 <div class="ql-wrapper">
                     <div id="description-quill-editor">
-                        <?= $fields['description'] ?? '' ?>
+                        <?= Sanitizer::sanitize($fields['description'] ?? '') ?>
                     </div>
                     <textarea
                         id="hidden-description-quill-editor"

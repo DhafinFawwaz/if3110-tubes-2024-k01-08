@@ -3,8 +3,10 @@
 use src\dao\ApplicationStatus;
 use src\dao\JobType;
 use src\dao\LocationType;
+use src\utils\Sanitizer;
 
 ?>
+
 
 <!-- For job lists -->
 <main class="container">
@@ -195,7 +197,7 @@ use src\dao\LocationType;
 
                         <div class="ql-wrapper">
                             <div id="status-reason-quill-editor">
-                                <?= $fields['status-reason'] ?? '' ?>
+                                <?= Sanitizer::sanitize($fields['status-reason'] ?? '') ?>
                             </div>
                             <textarea
                                 id="hidden-status-reason-quill-editor"
